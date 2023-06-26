@@ -3,6 +3,8 @@
 import { Link, NavLink } from 'react-router-dom';
 
 function Header() {
+	const active = 'on';
+
 	return (
 		<header>
 			<h1>
@@ -11,22 +13,34 @@ function Header() {
 
 			<ul id='gnb'>
 				<li>
-					<NavLink to='/department'>Department</NavLink>
+					<NavLink to='/department' activeClassName={active}>
+						Department
+					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/community'>Community</NavLink>
+					<NavLink to='/community' activeClassName={active}>
+						Community
+					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/gallery'>Gallery</NavLink>
+					<NavLink to='/gallery' activeClassName={active}>
+						Gallery
+					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/youtube'>Youtube</NavLink>
+					<NavLink to='/youtube' activeClassName={active}>
+						Youtube
+					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/contact'>Contact</NavLink>
+					<NavLink to='/contact' activeClassName={active}>
+						Contact
+					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/member'>Member</NavLink>
+					<NavLink to='/member' activeClassName={active}>
+						Member
+					</NavLink>
 				</li>
 			</ul>
 		</header>

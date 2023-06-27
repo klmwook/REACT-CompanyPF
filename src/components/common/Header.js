@@ -1,3 +1,6 @@
+//font awesome을 사용하기 위한 import
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //Link - 기본 링크 기능
 //NavLink - 기본 링크 기능 + 활성화 기능
 import { Link, NavLink } from 'react-router-dom';
@@ -44,6 +47,8 @@ function Header({ type }) {
 					</NavLink>
 				</li>
 			</ul>
+
+			<FontAwesomeIcon icon={faBars} />
 		</header>
 	);
 }

@@ -19,3 +19,12 @@ footer {
 		letter-spacing: 1px;
 	}
 }
+
+@media screen and (max-width: $mobile) {
+	footer {
+		h1 {
+			font: bold 18px/1 'arial';
+			margin-bottom: 20px;
+		}
+	}
+}

@@ -4,7 +4,6 @@ import axios from 'axios';
 
 function Department() {
 	const [Members, setMembers] = useState([]);
-	console.log(Members);
 
 	//최초의 데이터를 가져와야 되기 때문에 useEffect를 사용
 	useEffect(() => {

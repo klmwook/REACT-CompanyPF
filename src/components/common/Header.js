@@ -2,11 +2,12 @@
 //NavLink - 기본 링크 기능 + 활성화 기능
 import { Link, NavLink } from 'react-router-dom';
 
-function Header() {
+function Header({ type }) {
 	const active = 'on';
 
 	return (
-		<header>
+		//props로 전달되는 type값을 header의 class 명으로 지정해서 스타일 분기 처리
+		<header className={type}>
 			<h1>
 				<Link to='/'>LOGO</Link>
 			</h1>

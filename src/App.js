@@ -1,4 +1,4 @@
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 //Common
 import Footer from './components/common/Footer';
@@ -24,15 +24,23 @@ import './scss/style.scss';
 function App() {
 	return (
 		<>
-			<Header />
+			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 더 구체적인 라우터를 채ㅐㄱ하고 나머지는 무시 */}
+			<Switch>
+				<Route exact path='/'>
+					{/* 메인전용 라우터에는 main문자 값을 전달 */}
+					<Header type={'main'} />
+					<Visual />
+					<News />
+					<Pics />
+					<Vids />
+					<Banner />
+				</Route>
 
-			<Route exact path='/'>
-				<Visual />
-				<News />
-				<Pics />
-				<Vids />
-				<Banner />
-			</Route>
+				<Route path='/'>
+					{/* 서브 전용 라우터에는 sub 문자값을 전달 */}
+					<Header type={'sub'} />
+				</Route>
+			</Switch>
 
 			<Route path='/department'>
 				<Department />

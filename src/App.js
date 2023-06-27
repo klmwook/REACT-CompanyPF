@@ -19,6 +19,8 @@ import Pics from './components/main/Pics';
 import Vids from './components/main/Vids';
 import Banner from './components/main/Banner';
 
+import './scss/style.scss';
+
 function App() {
 	return (
 		<>

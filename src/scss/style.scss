@@ -1,0 +1,19 @@
+//common scss
+@import 'common/reset';
+@import 'common/header';
+@import 'common/footer';
+
+//main
+@import 'main/banner';
+@import 'main/news';
+@import 'main/pics';
+@import 'main/vids';
+@import 'main/visual';
+
+//sub
+@import 'sub/community';
+@import 'sub/contact';
+@import 'sub/department';
+@import 'sub/gallery';
+@import 'sub/member';
+@import 'sub/youtube';

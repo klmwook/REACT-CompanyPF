@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 function Btns() {
 	const btnRef = useRef(null);
-	let pos = useRef([]);
+	const pos = useRef([]);
+	const [Num, setNum] = useState(0);
 
 	//myScroll공통 클래스가 있는 섹션을 모두 찾아서 해당 요소의 세로 위치값을 참조객체에 배열로 담아주는 함수
 	const getPos = () => {
@@ -10,7 +11,7 @@ function Btns() {
 		pos.current = [];
 		const secs = btnRef.current.parentElement.querySelectorAll('.myScroll');
 		for (const sec of secs) pos.current.push(sec.offsetTop);
-		console.log(pos.current);
+		setNum(pos.current.length); //현재 section 값 찾음
 	};
 
 	useEffect(() => {
@@ -27,11 +28,11 @@ function Btns() {
 
 	return (
 		<ul className='btnNavi' ref={btnRef}>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
+			{Array(Num)
+				.fill()
+				.map((_, idx) => {
+					return <li key={idx} className='on'></li>;
+				})}
 		</ul>
 	);
 }

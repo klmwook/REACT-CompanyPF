@@ -1,5 +1,9 @@
 function Pics() {
-	return <div>Pics</div>;
+	return (
+		<section id='pics' className='myScroll'>
+			Pics
+		</section>
+	);
 }
 
 export default Pics;

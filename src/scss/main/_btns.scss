@@ -1,5 +1,5 @@
 .btnNavi {
-	position: absolute;
+	position: fixed;
 	right: 50px;
 	top: 50%;
 	transform: translateY(-50%);
@@ -12,7 +12,7 @@
 		border: 1px solid #333;
 		margin: 20px;
 		cursor: pointer;
-		transition: 0.5;
+		transition: 0.5s;
 
 		&.on {
 			height: 100px;

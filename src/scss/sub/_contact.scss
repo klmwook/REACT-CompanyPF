@@ -5,5 +5,15 @@
 			height: 400px;
 			background: #333;
 		}
+
+		.branch {
+			li {
+				cursor: pointer;
+
+				&.on {
+					color: hotpink;
+				}
+			}
+		}
 	}
 }

@@ -1,15 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../common/Layout';
+import emailjs from '@emailjs/browser';
 
 function Contact() {
 	const [Traffic, setTraffic] = useState(false);
 	const [Location, setLocation] = useState(null);
 	const [Index, setIndex] = useState(0);
-
-	//지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조 객체 생성
-	const container = useRef(null);
-	//일반 HTML 버전과는 달리 윈도우 객체에서 직접 Kakao 상위 객체값을 뽑아옴
-	const { kakao } = window;
+	const container = useRef(null); //지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조 객체 생성
+	const { kakao } = window; //일반 HTML 버전과는 달리 윈도우 객체에서 직접 Kakao 상위 객체값을 뽑아옴
 
 	const infos = [
 		{
@@ -50,13 +48,24 @@ function Contact() {
 	//카카오 맵 연결 해보기~
 	//인스턴스 호출 구문은 Component Mount 이후에 호출
 	useEffect(() => {
+		container.current.innerHTML = '';
 		const mapInstance = new kakao.maps.Map(container.current, option);
-
 		marker.setMap(mapInstance);
+
 		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
 		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 		//지역변수인 mapInstance값을 다른함수에도 활용해야 되므로 Location state에 해당 인스턴스 값 저장
 		setLocation(mapInstance);
+
+		const setCenter = () => {
+			//setCenter가 호출 시 내부적으로 Index state값에 의존하고 있기 때문에
+			//useEffect 안쪽에서 setCenter 함수를 정의하고 호출
+			mapInstance.setCenter(infos[Index].latlng);
+		};
+
+		window.addEventListener('resize', setCenter);
+
+		return () => window.removeEventListener('resize', setCenter);
 	}, [Index]);
 
 	useEffect(() => {
@@ -64,6 +73,22 @@ function Contact() {
 		//첫 렌더링 사이클에서는 Location 값이 null이므로 Option Chaining을 활용해서 해당 값이 담기는 두번째 랜더링 사이클로부터 동작하도록 처리
 		Traffic ? Location?.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC) : Location?.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
 	}, [Traffic]);
+
+	//이메일 전송 부분
+	const form = useRef();
+
+	const sendEmail = (e) => {
+		e.preventDefault();
+
+		emailjs.sendForm('service_xvbck36', 'template_5lrdzsn', form.current, 'DuVGSRIP4uXIG234N').then(
+			(result) => {
+				console.log(result.text);
+			},
+			(error) => {
+				console.log(error.text);
+			}
+		);
+	};
 
 	return (
 		<Layout name={'Contact'}>
@@ -78,6 +103,19 @@ function Contact() {
 					);
 				})}
 			</ul>
+
+			<div>
+				<form ref={form} onSubmit={sendEmail}>
+					<input type='hidden' name='to_name' value='taewook' />
+					<label>Name</label>
+					<input type='text' name='from_name' />
+					<label>Email</label>
+					<input type='email' name='reply_to' />
+					<label>Message</label>
+					<textarea name='message' />
+					<input type='submit' value='Send' />
+				</form>
+			</div>
 		</Layout>
 	);
 }

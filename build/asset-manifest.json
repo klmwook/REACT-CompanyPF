@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/REACT-CompanyPF/static/css/main.df00eae3.css",
+    "main.js": "/REACT-CompanyPF/static/js/main.c8252914.js",
+    "index.html": "/REACT-CompanyPF/index.html",
+    "main.df00eae3.css.map": "/REACT-CompanyPF/static/css/main.df00eae3.css.map",
+    "main.c8252914.js.map": "/REACT-CompanyPF/static/js/main.c8252914.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.df00eae3.css",
+    "static/js/main.c8252914.js"
+  ]
+}

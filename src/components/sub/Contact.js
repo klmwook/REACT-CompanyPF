@@ -52,6 +52,9 @@ function Contact() {
 		const mapInstance = new kakao.maps.Map(container.current, option);
 		marker.setMap(mapInstance);
 
+		//지도영역에 휠 기능 비활성화
+		mapInstance.setZoomable(false);
+
 		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
 		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 		//지역변수인 mapInstance값을 다른함수에도 활용해야 되므로 Location state에 해당 인스턴스 값 저장
@@ -75,6 +78,10 @@ function Contact() {
 	}, [Traffic]);
 
 	//이메일 전송 부분
+	const [Success, setSuccess] = useState(false);
+	const inputName = useRef();
+	const inputEmail = useRef();
+	const inputMsg = useRef();
 	const form = useRef();
 
 	const sendEmail = (e) => {
@@ -83,9 +90,14 @@ function Contact() {
 		emailjs.sendForm('service_xvbck36', 'template_5lrdzsn', form.current, 'DuVGSRIP4uXIG234N').then(
 			(result) => {
 				console.log(result.text);
+				setSuccess(true);
+				inputName.current.value = '';
+				inputEmail.current.value = '';
+				inputMsg.current.value = '';
 			},
 			(error) => {
 				console.log(error.text);
+				setSuccess(false);
 			}
 		);
 	};
@@ -104,18 +116,19 @@ function Contact() {
 				})}
 			</ul>
 
-			<div>
+			<div id='formBox'>
 				<form ref={form} onSubmit={sendEmail}>
 					<input type='hidden' name='to_name' value='taewook' />
 					<label>Name</label>
-					<input type='text' name='from_name' />
+					<input type='text' name='from_name' ref={inputName} />
 					<label>Email</label>
-					<input type='email' name='reply_to' />
+					<input type='email' name='reply_to' ref={inputEmail} />
 					<label>Message</label>
-					<textarea name='message' />
+					<textarea name='message' ref={inputMsg} />
 					<input type='submit' value='Send' />
 				</form>
 			</div>
+			{Success && '메일이 성공적으로 발송되었습니다.'}
 		</Layout>
 	);
 }

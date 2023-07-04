@@ -8,13 +8,12 @@
 		opacity: 0;
 		transition: 1s 0.3s;
 	}
-
 	> .inner {
 		padding: 100px 10vw;
 		min-height: 600px;
 		opacity: 0;
 		transform: translateY(200px);
-		transition-property: opacity, fransform;
+		transition-property: opacity, transform;
 		transition-duration: 1s;
 		transition-delay: 0.5s;
 
@@ -22,7 +21,7 @@
 			width: 100%;
 			font: normal 70px/1 'work sans';
 			color: #333;
-			margin-bottom: 30px;
+			margin-bottom: 120px;
 
 			&::before {
 				content: '';
@@ -41,19 +40,18 @@
 	figure {
 		opacity: 1;
 	}
-
 	> .inner {
 		opacity: 1;
 		transform: translateY(0px);
 	}
 }
 
+//tablet
 @media screen and (max-width: $tablet) {
 	.content {
 		figure {
 			height: 150px;
 		}
-
 		> .inner {
 			padding: 70px 10vw;
 
@@ -69,12 +67,12 @@
 	}
 }
 
+//mobile
 @media screen and (max-width: $mobile) {
 	.content {
 		figure {
 			display: none;
 		}
-
 		> .inner {
 			padding: 50px 10vw;
 

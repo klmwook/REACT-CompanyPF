@@ -37,11 +37,69 @@
 				padding: 15px 30px;
 
 				input[type='text'],
-				input[type='password'] {
+				input[type='password'],
+				select,
+				textarea {
 					width: 40%;
 					border: 1px solid #aaa;
 					padding: 6px 10px;
 					background: #eff8f8;
+					resize: none;
+				}
+
+				input[type='radio'],
+				input[type='checkbox'] {
+					margin-right: 20px;
+					margin-left: 5px;
+				}
+
+				p {
+					font: 11px/1 '돋움';
+					color: hotpink;
+					margin-top: 10px;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	.Member {
+		> .inner {
+			table {
+				th {
+					display: none;
+					padding: 15px 0px;
+
+					&:last-child {
+						display: flex;
+						width: 100%;
+						justify-content: space-between;
+
+						input[type='reset'],
+						input[type='submit'] {
+							display: inline-block;
+							width: 48%;
+							margin: 0px;
+						}
+					}
+				}
+
+				td {
+					border-left: none;
+					padding: 15px 0px;
+
+					input[type='text'],
+					input[type='password'],
+					select,
+					textarea {
+						width: 100%;
+					}
+
+					input[type='radio'],
+					input[type='checkbox'] {
+						margin-right: 10px;
+					}
 				}
 			}
 		}

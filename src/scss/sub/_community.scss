@@ -45,13 +45,22 @@
 				flex-wrap: wrap;
 
 				.txt {
-					width: 88%;
-
+					width: 70%;
 					h2 {
 						margin-bottom: 10px;
 					}
-				}
 
+					input,
+					textarea {
+						width: 100%;
+						padding: 8px 10px;
+						border: 1px solid lightblue;
+						margin-bottom: 20px;
+						background: #f4ffff;
+						resize: none;
+						outline: none;
+					}
+				}
 				.btnSet {
 					width: 10%;
 					display: flex;
@@ -63,13 +72,45 @@
 						border: none;
 						background: transparent;
 						cursor: pointer;
-
 						&:nth-of-type(1) {
 							color: orange;
 						}
 						&:nth-of-type(2) {
 							color: orangered;
 						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	.Community {
+		> .inner {
+			.inputBox {
+				input[type='text'],
+				textarea {
+					width: 100%;
+				}
+				.btnSet {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: space-between;
+
+					button {
+						width: 47%;
+						margin-right: 0;
+					}
+				}
+			}
+
+			.showBox {
+				article {
+					.txt,
+					.btnSet {
+						width: 100%;
+						margin-top: 20px;
 					}
 				}
 			}

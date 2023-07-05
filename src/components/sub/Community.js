@@ -2,11 +2,23 @@ import Layout from '../common/Layout';
 import { useRef, useState, useEffect } from 'react';
 
 function Community() {
+	// 로컬저장소의 데이터를 반환하는 함수 정의
+	/*
+		저장소에 값이 있으면 해당 값을 다시 JSON 형태로 변경해서 반환
+		값이 없으면 빈 배열을 반환하는 
+	*/
+
+	const getLocalData = () => {
+		const data = localStorage.getItem('post');
+		return JSON.parse(data);
+	};
+
 	const input = useRef(null);
 	const textarea = useRef(null);
 	const editInput = useRef(null);
 	const editTextarea = useRef(null);
-	const [Posts, setPosts] = useState([]);
+	//getLocalData 함수의 리턴값으로 Posts State 초기화
+	const [Posts, setPosts] = useState(getLocalData());
 	const [Allowed, setAllowed] = useState(true);
 
 	const resetForm = () => {
@@ -19,22 +31,19 @@ function Community() {
 			resetForm();
 			return alert('제목과 본문을 모두 입력하세요.');
 		}
-		setPosts([...Posts, { title: input.current.value, content: textarea.current.value }]);
+		setPosts([{ title: input.current.value, content: textarea.current.value }, ...Posts]);
 		resetForm();
 	};
 
 	const deletePost = (delIndex) => {
-		if (window.confirm('정말로 삭제 하시겠습니까?')) {
-			setPosts(Posts.filter((_, idx) => idx !== delIndex));
-		}
+		if (!window.confirm('해당 게시글을 삭제하겠습니까?')) return;
+		setPosts(Posts.filter((_, idx) => idx !== delIndex));
 	};
 
 	const enableUpdate = (editIndex) => {
-		//수정 모드 진입 함수 호출시 Allowed가 true 일때에만 로직이 실행되도록 처리
-		if (!Allowed) {
-			return;
-		}
-		//일단 로직이 실행되면 Allowed 값을 false로 바꿔서 이후부터는 다시 수정모드로 진입되는 것을 방지
+		//수정모드 진입함수 호출시 Allowd가 true일때에만 로직이 실행되도록 처리
+		if (!Allowed) return;
+		//일직 로직이 실행되면 allowed값을 false로 바꿔서 이후부터는 다시 수정모드로 진입되는 것을 방지
 		setAllowed(false);
 		setPosts(
 			Posts.map((post, postIndex) => {
@@ -51,7 +60,7 @@ function Community() {
 				return post;
 			})
 		);
-		//글 수정 취소버튼을 눌러서 disableUpdate 함수가 호출이 되야지만 Allowed값을 다시 true로 바꿔서 글 수정 가능하게 처리
+		//글 수정 취소버튼을 눌러서 disableUpdate함수가 호출이 되야지만 Allowed값을 다시 true로 바꿔서 글 수정 가능하게 처리
 		setAllowed(true);
 	};
 
@@ -70,17 +79,22 @@ function Community() {
 				return post;
 			})
 		);
+		setAllowed(true);
 	};
 
 	useEffect(() => {
-		console.log(Posts);
+		//Posts State 값이 변경될 때마다 해당 데이터를 문자화해서 localStorage에 저장
+		localStorage.setItem('post', JSON.stringify(Posts));
 	}, [Posts]);
 
 	return (
 		<Layout name={'Community'}>
 			<div className='inputBox'>
-				<input type='text' placeholder='제목을 입력하세요.' ref={input} /> <br />
-				<textarea cols='30' rows='3' placeholder='본문을 입력하세요.' ref={textarea}></textarea> <br />
+				<input type='text' placeholder='제목을 입력하세요.' ref={input} />
+				<br />
+				<textarea cols='30' rows='3' placeholder='본문을 입력하세요.' ref={textarea}></textarea>
+				<br />
+
 				<nav className='btnSet'>
 					<button onClick={resetForm}>cancel</button>
 					<button onClick={createPost}>write</button>
@@ -95,6 +109,8 @@ function Community() {
 								//수정모드
 								<>
 									<div className='txt'>
+										{/* onChange이벤트로 제어하지 않는 input요소의 value값은 defaultValue속성으로 지정 */}
+										{/* value: 리액트의 상태값에 관리되는 폼요소, defaultValue: 일반 돔에의해 관리되는 폼요소 */}
 										<input type='text' defaultValue={post.title} ref={editInput} />
 										<br />
 										<textarea cols='30' rows='3' defaultValue={post.content} ref={editTextarea}></textarea>
@@ -129,18 +145,24 @@ function Community() {
 
 export default Community;
 
-/* 
-CRUD
-Create - 데이터 저장 (게시글 저장)
-Read - 데이터 호출 (게시글 보기)
-Update - 데이터 수정 (게시글 수정)
-Delete - 데이터 삭제 (게시글 삭제)
+/*
+Create - 데이터저장 (게시글 저장)
+Read - 데이터호출 (게시글 보기)
+Upated - 데이터수정 (게시글 수정)
+Delete - 데이터삭제 (게시글 삭제)
 
-localStorage : 모든 브라우저마다 가지고 있는 경량의 데이터 베이스 (문자열 저장)
+localStorage: 모든 브라우저마다 가지고 있는 경량의 데이터 베이스 (문자열 저장)
 
 수정 모드 작업 흐름
 1- 수정 버튼 클릭시 해당 순번의 Posts의 객체에 수정관련 property 추가
 2- map으로 반복처리시 수정관련 property의 유무에 따라 수정모드, 출력모드 구분해서 분기처리 후 렌더링
 3- 출력모드: h2, p로 출력 / 수정모드: input, textarea로 값을 담아서 출력 (수정취소, 수정 버튼 추가)
 4- 수정모드에서 수정버튼 클릭시 State값 변경하고 해당 포스트의 수정관련 property 수정
+
+local Storage
+- 각 브라우저 마다 가지고 있는 로컬 저장 공간
+- 문자값만 저장 가능 (문자가 아닌 데이터는 강제로 문자화 시켜서 저장 JSON)
+- 5MB 저장 가능
+- localStorage.setItem ({key : 'value}) : 값 저장
+- localStorage.getItem (key) : 값 불러오기
 */

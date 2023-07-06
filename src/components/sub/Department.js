@@ -14,7 +14,7 @@ function Department() {
 	}, []);
 
 	return (
-		<Layout name={'Department'}>
+		<Layout name={'Department'} txt={'hello-World'}>
 			{Members.map((member, idx) => {
 				return (
 					<article key={idx}>

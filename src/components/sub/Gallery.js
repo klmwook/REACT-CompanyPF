@@ -17,7 +17,6 @@ function Gallery() {
 	const [Index, setIndex] = useState(0);
 
 	const getFlickr = async (opt) => {
-		console.log('getFlickr');
 		let counter = 0;
 		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
 		const key = '4b95b58f2acca136d03e1c6883048c6c';
@@ -50,7 +49,6 @@ function Gallery() {
 		imgs.forEach((img) => {
 			img.onload = () => {
 				++counter;
-				console.log(counter);
 
 				//임시방편 - 전체 이미지 갯수가 하나 모잘라도 출력되게 수정
 				//문제점 - myGallery, interestGallery는 전체 이미지 카운트가 잘 되는데 특정 사용자 갤러리만 갯수가 1씩 모자라는 현상

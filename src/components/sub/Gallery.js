@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 
 function Gallery() {
+	const isUser = useRef(null);
 	const btnSet = useRef(null);
+	const btnSearch = useRef(null);
 	const enableEvent = useRef(true);
 	const searchInput = useRef(null);
 	const frame = useRef(null);
@@ -30,7 +32,13 @@ function Gallery() {
 		if (result.data.photos.photo.length === 0) {
 			setLoader(false);
 			frame.current.classList.add('on');
-			return alert('이미지가 없습니다.');
+			btnSearch.current.classList.remove('on');
+			const btnMine = btnSet.current.children;
+			btnMine[1].classList.add('on');
+			getFlickr({ type: 'user', user: '164021883@N04' });
+			enableEvent.current = true;
+
+			return alert('이미지 결과값이 없습니다.');
 		}
 
 		setItems(result.data.photos.photo);
@@ -43,7 +51,8 @@ function Gallery() {
 
 				//임시방편 - 전체 이미지 갯수가 하나 모잘라도 출력되게 수정
 				//문제점 - myGallery, interestGallery는 전체 이미지 카운트가 잘 되는데 특정 사용자 갤러리만 갯수가 1씩 모자라는 현상
-				if (counter === imgs.length - 1) {
+				// 검색 결과물에서 특정 사용자를 클릭하면 다시 결과값이 하나 적게 리턴되는 문제 (해결필요)
+				if (counter === imgs.length - 2) {
 					setLoader(false);
 					frame.current.classList.add('on');
 
@@ -79,6 +88,7 @@ function Gallery() {
 
 		//새로운 데이터로 갤러리 생성 함수 호출
 		getFlickr({ type: 'interest' });
+		isUser.current = false;
 	};
 
 	const showMine = (e) => {
@@ -91,6 +101,7 @@ function Gallery() {
 
 		//새로운 데이터로 갤러리 생성 함수 호출
 		getFlickr({ type: 'user', user: '198489363@N07' });
+		isUser.current = false;
 	};
 
 	const showSearch = (e) => {
@@ -98,11 +109,9 @@ function Gallery() {
 		if (tag === '') return alert('검색어를 입력하세요.');
 		if (!enableEvent.current) return;
 
-		//기존 갤러리 초기화 함수 호출
 		resetGallery(e);
-
-		//새로운 데이터로 갤러리 생성 함수 호출
 		getFlickr({ type: 'search', tags: tag });
+		searchInput.current.value = '';
 	};
 
 	useEffect(() => getFlickr({ type: 'user', user: '198489363@N07' }), []);
@@ -119,7 +128,9 @@ function Gallery() {
 
 			<div className='searchBox'>
 				<input type='text' placeholder='검색어를 입력하세요.' ref={searchInput} onKeyPress={(e) => e.key === 'Enter' && showSearch(e)} />
-				<button onClick={showSearch}>Search</button>
+				<button onClick={showSearch} ref={btnSearch}>
+					Search
+				</button>
 			</div>
 
 			<div className='frame' ref={frame}>
@@ -140,6 +151,8 @@ function Gallery() {
 										/>
 										<span
 											onClick={(e) => {
+												if (isUser.current) return;
+												isUser.current = true;
 												setLoader(true);
 												frame.current.classList.remove('on');
 												getFlickr({ type: 'user', user: e.target.innerText });

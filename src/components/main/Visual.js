@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 function Visual() {
 	return (
 		<figure id='visual' className='myScroll'>
@@ -6,4 +8,4 @@ function Visual() {
 	);
 }
 
-export default Visual;
+export default memo(Visual);

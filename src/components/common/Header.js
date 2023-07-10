@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //Link - 기본 링크 기능
 //NavLink - 기본 링크 기능 + 활성화 기능
 import { Link, NavLink } from 'react-router-dom';
-import Menu from './Menu';
-import { useRef } from 'react';
+import { useRef, memo } from 'react';
 
-function Header({ type }) {
+function Header({ type, menu }) {
 	const toggleMenu = useRef(null);
 	const active = 'on';
 
@@ -55,14 +54,12 @@ function Header({ type }) {
 				<FontAwesomeIcon
 					icon={faBars}
 					onClick={() => {
-						toggleMenu.current.toggle();
+						menu.current.toggle();
 					}}
 				/>
 			</header>
-
-			<Menu ref={toggleMenu} />
 		</>
 	);
 }
 
-export default Header;
+export default memo(Header);

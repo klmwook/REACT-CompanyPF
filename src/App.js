@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 //Common
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
+import Menu from './components/common/Menu';
 
 //Main
 import Main from './components/main/Main';
@@ -35,6 +36,7 @@ function App() {
 			<Route path='/contact' component={Contact} />
 			<Route path='/member' component={Member} />
 			<Footer />
+			<Menu ref={menu} />
 		</>
 	);
 }

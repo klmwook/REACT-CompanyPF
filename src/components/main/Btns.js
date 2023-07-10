@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import Anime from '../../asset/anime';
 
 function Btns({ setScrolled, setPos }) {
@@ -7,16 +7,16 @@ function Btns({ setScrolled, setPos }) {
 	const [Num, setNum] = useState(0);
 
 	//myScroll공통 클래스가 있는 섹션을 모두 찾아서 해당 요소의 세로 위치값을 참조객체에 배열로 담아주는 함수
-	const getPos = () => {
+	const getPos = useCallback(() => {
 		//객체가 초기화가 되지 않으면 추가가 계속 되기 때문에 초기화 해줘야됨 (리사이즈 시 마다 엄청 늘어남.)
 		pos.current = [];
 		const secs = btnRef.current.parentElement.querySelectorAll('.myScroll');
 		for (const sec of secs) pos.current.push(sec.offsetTop);
 		setNum(pos.current.length); //현재 section 값 찾음
 		setPos(pos.current);
-	};
+	}, [setPos]);
 
-	const activation = () => {
+	const activation = useCallback(() => {
 		const base = -window.innerHeight / 2;
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
@@ -31,7 +31,7 @@ function Btns({ setScrolled, setPos }) {
 				boxs[idx].classList.add('on');
 			}
 		});
-	};
+	}, [setScrolled]);
 
 	useEffect(() => {
 		getPos();
@@ -48,7 +48,7 @@ function Btns({ setScrolled, setPos }) {
 			window.removeEventListener('scroll', activation);
 			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 		};
-	}, []);
+	}, [getPos, activation]);
 
 	//eslint가 의존성 배열에 activation , getPos 함수를 등록하라고 권고문구를 띄우는 이유
 	/*

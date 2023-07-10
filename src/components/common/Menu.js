@@ -10,6 +10,7 @@ const Menu = forwardRef((props, ref) => {
 		return { toggle: () => setOpen(!Open) };
 	});
 
+	//이 부분은 계속 가지고 있기 때문에 굳이 remove 함수로 변경 하지 않아도 된다
 	useEffect(() => {
 		window.addEventListener('resize', () => {
 			if (window.innerWidth >= 1200) setOpen(false);

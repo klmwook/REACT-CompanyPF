@@ -7,7 +7,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { useRef, memo } from 'react';
 
 function Header({ type, menu }) {
-	const toggleMenu = useRef(null);
 	const active = 'on';
 
 	return (
@@ -54,6 +53,7 @@ function Header({ type, menu }) {
 				<FontAwesomeIcon
 					icon={faBars}
 					onClick={() => {
+						console.log(menu);
 						menu.current.toggle();
 					}}
 				/>

@@ -18,7 +18,7 @@ import Youtube from './components/sub/Youtube';
 
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setYoutube } from './redux/action';
+import { setYoutube, setMembers } from './redux/action';
 import { useCallback, useEffect, useRef } from 'react';
 
 import './scss/style.scss';
@@ -26,6 +26,13 @@ import './scss/style.scss';
 function App() {
 	const dispatch = useDispatch();
 	const menu = useRef(null);
+
+	//메인 처음 마운트 시 데이터 fetching 후 store에 저장
+	const fecthMembers = useCallback(async () => {
+		const result = await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
+		console.log(result);
+		dispatch(setMembers(result.data.members));
+	}, [dispatch]);
 
 	const fecthYoutube = useCallback(async () => {
 		const key = 'AIzaSyDOsDRuQ_v0ISUQEy6mZdnCfcf3VKIG5uE';
@@ -41,7 +48,8 @@ function App() {
 	//최초의 데이터를 가져와야 되기 때문에 useEffect를 사용
 	useEffect(() => {
 		fecthYoutube();
-	}, [fecthYoutube]);
+		fecthMembers();
+	}, [fecthYoutube, fecthMembers]);
 
 	return (
 		<>

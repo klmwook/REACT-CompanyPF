@@ -1,25 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Layout from '../common/Layout';
 import axios from 'axios';
 import Modal from '../common/Modal';
+import { setYoutube } from '../../redux/action';
 
 function Youtube() {
+	const Vids = useSelector((store) => store.youtubeReducer.youtube);
 	const modal = useRef(null);
-	const [Vids, setVids] = useState([]);
 	const [Index, setIndex] = useState(0);
-
-	const fecthYoutube = async () => {
-		const key = 'AIzaSyDOsDRuQ_v0ISUQEy6mZdnCfcf3VKIG5uE';
-		const list = 'PLGrvPC1Wr19hEuOc58RgKY1uPw_0eoIbE';
-		const num = 10;
-		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
-
-		const result = await axios.get(url);
-		setVids(result.data.items);
-	};
-
-	//최초의 데이터를 가져와야 되기 때문에 useEffect를 사용
-	useEffect(() => fecthYoutube(), []);
 
 	return (
 		<>

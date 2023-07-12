@@ -48,6 +48,25 @@ const memberReducer = (state = initMember, action) => {
 	}
 };
 
+const youtubeReducer = (state = { youtube: [] }, action) => {
+	switch (action.type) {
+		case 'SET_YOUTUBE':
+			return { ...state, youtube: action.payload };
+		default:
+			return state;
+	}
+};
+
 //해당 변형자 함수가 반환하는 객체값을 하나의 객체로 합쳐서 외부로 export
-const reducers = combineReducers({ memberReducer });
+const reducers = combineReducers({ memberReducer, youtubeReducer });
 export default reducers;
+
+/*
+
+  1. action.js -> 액션 생성후 리턴
+  2. reducer.js -> 액션 객체를 받아서 전역 데이터를 변형한 뒤 리턴
+  3. store.js -> 리듀서가 반환한 객체를 전역 store공간에 저장 후 export
+  4. index.js -> store 전역데이터 객체를 App 컴포넌트에 Provider로 전달
+  5. 원하는 컴포넌트 어디에서든 useSelector로 store 데이터 호출
+  
+*/

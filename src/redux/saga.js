@@ -20,7 +20,7 @@
 */
 
 import { takeLatest, put, call, fork, all } from '@redux-saga/core/effects';
-import { fetchYoutube } from './api';
+import { fetchYoutube, fetchDepartment } from './api';
 import * as types from './actionType';
 
 //컴포넌트로부터 리듀서에 전달된 YOUTUBE_START 액션 요청을 대신 전달 받아 데이터 fetching 함수 호출해주는 함수
@@ -40,7 +40,20 @@ function* returnYoutube() {
 	}
 }
 
+//Department saga
+function* callDepartment() {
+	yield takeLatest(types.DEPARTMENT.start, returnDepartment);
+}
+function* returnDepartment() {
+	try {
+		const response = yield call(fetchDepartment);
+		yield put({ type: types.DEPARTMENT.success, payload: response.data.members });
+	} catch (err) {
+		yield put({ type: types.DEPARTMENT.fail, payload: err });
+	}
+}
+
 //최종적으로 fork를 통해 callYoutube 호출 함수 제작
 export default function* rootSaga() {
-	yield all([fork(callYoutube)]);
+	yield all([fork(callYoutube), fork(callDepartment)]);
 }

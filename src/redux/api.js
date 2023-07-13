@@ -1,13 +1,17 @@
 //외부 비동기 데이터 호출 함수를 외부 파일로 따로 관리
 import axios from 'axios';
 
-export const fecthYoutube = async () => {
+export const fetchYoutube = async () => {
 	const key = 'AIzaSyDOsDRuQ_v0ISUQEy6mZdnCfcf3VKIG5uE';
 	const list = 'PLGrvPC1Wr19hEuOc58RgKY1uPw_0eoIbE';
 	const num = 10;
 	const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
 
 	return await axios.get(url);
+};
+
+export const fetchDepartment = async () => {
+	return await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
 };
 
 /*

@@ -17,10 +17,18 @@ import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import * as types from './redux/actionType';
 import { useRef } from 'react';
 
 function App() {
+	const dispatch = useDispatch();
 	const menu = useRef(null);
+
+	useEffect(() => {
+		dispatch({ type: types.YOUTUBE.start });
+	}, [dispatch]);
 	return (
 		<>
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 더 구체적인 라우터를 체크하고 나머지는 무시 */}

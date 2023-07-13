@@ -5,8 +5,6 @@ function Pics({ Scrolled, Pos }) {
 	const base = window.innerHeight / 2;
 	const modified = currentPos + base;
 
-	console.log(`Pos : ${Pos}`);
-
 	return (
 		<section id='pics' className='myScroll'>
 			<h1 style={{ transform: `translateX(${currentPos}px)` }}>FLICKR</h1>

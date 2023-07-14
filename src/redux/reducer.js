@@ -19,6 +19,23 @@ const youtubeReducer = (state = { youtube: [] }, action) => {
 	}
 };
 
+const flickrReducer = (state = { flickr: [] }, action) => {
+	switch (action.type) {
+		//컴포넌트로 부터 넘겨받는 action 객체
+		//해당 객체를 넘겨받으면 saga가 해당 타입에 대한 비동기 데이터 처리하고 새로운 객체 반환
+		case types.FLICKR.start:
+			return state;
+		//saga로 부터 새롭게 넘겨받은 action 객체로 데이터 처리 (데이터 fetching 성공시)
+		case types.FLICKR.success:
+			return { ...state, flickr: action.payload };
+		//saga로 부터 새롭게 넘겨받은 action 객체로 데이터 처리 (데이터 fetching 실패시)
+		case types.FLICKR.fail:
+			return { ...state, flickr: action.payload };
+		default:
+			return state;
+	}
+};
+
 const departmentReducer = (state = { department: [] }, action) => {
 	switch (action.type) {
 		case types.DEPARTMENT.start:
@@ -32,5 +49,5 @@ const departmentReducer = (state = { department: [] }, action) => {
 	}
 };
 
-const reducers = combineReducers({ youtubeReducer, departmentReducer });
+const reducers = combineReducers({ youtubeReducer, flickrReducer, departmentReducer });
 export default reducers;

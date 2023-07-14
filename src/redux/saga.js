@@ -44,12 +44,11 @@ function* returnYoutube() {
 function* callFlickr() {
 	yield takeLatest(types.FLICKR.start, returnFlickr);
 }
-
 function* returnFlickr(action) {
 	try {
-		//컴포넌트에 액션객체 전달시 만약 타입외의 property 값이 받아서 call 함수 두번째 인수로 api 함수에 전달 가능
+		//컴포넌트에 액션객체 전달시 만약 타입외의 propety값이 있다면 해당 값을 받아서 call함수 두번째 인수로 api함수에 인수로 전달 가능
 		const response = yield call(fetchFlickr, action.opt);
-		yield put({ type: types.FLICKR.success, payload: response.photos.photo });
+		yield put({ type: types.FLICKR.success, payload: response.data.photos.photo });
 	} catch (err) {
 		yield put({ type: types.FLICKR.fail, payload: err });
 	}

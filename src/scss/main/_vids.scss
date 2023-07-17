@@ -5,7 +5,7 @@
 
 	.swiper {
 		height: 100%;
-		padding: 10vw 0px;
+		padding: 12vw 0px;
 
 		.swiper-slide {
 			width: 100%;
@@ -17,8 +17,12 @@
 				display: flex;
 				flex-wrap: wrap;
 				justify-content: center;
-				align-content: center;
+				align-content: flex-start;
 				color: #333;
+				padding: 30px;
+				opacity: 0.5;
+				transform: scale(0.8);
+				transition: opacity 0.5s, transform 0.5s;
 
 				.pic {
 					width: 100%;
@@ -30,7 +34,34 @@
 						object-fit: cover;
 					}
 				}
+
+				h2 {
+					font: normal 40px/1 'arial';
+					color: #111;
+					margin-top: 15px;
+				}
+
+				p {
+					font: 14px/1.3 'arial';
+					color: #bbb;
+					margin-top: 30px;
+				}
 			}
+		}
+
+		.swiper-slide-active {
+			.inner {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	#vids {
+		.swiper {
+			padding: 12vw 50px;
 		}
 	}
 }

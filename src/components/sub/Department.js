@@ -1,17 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Layout from '../common/Layout';
-import axios from 'axios';
 
 function Department() {
-	const [Members, setMembers] = useState([]);
-
-	//최초의 데이터를 가져와야 되기 때문에 useEffect를 사용
-	useEffect(() => {
-		axios.get(`${process.env.PUBLIC_URL}/DB/members.json`).then((data) => {
-			console.log(data);
-			setMembers(data.data.members);
-		});
-	}, []);
+	const Members = useSelector((store) => store.department.data);
 
 	return (
 		<Layout name={'Department'} txt={'hello-World'}>

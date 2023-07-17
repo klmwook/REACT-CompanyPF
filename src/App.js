@@ -20,6 +20,7 @@ import './scss/style.scss';
 import { useRef } from 'react';
 
 import { fetchYoutube } from './redux/youtubeSlice';
+import { fetchDepartment } from './redux/departmentSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -37,6 +38,7 @@ function App() {
 
 	useEffect(() => {
 		dispatch(fetchYoutube());
+		dispatch(fetchDepartment());
 	}, [dispatch]);
 
 	return (

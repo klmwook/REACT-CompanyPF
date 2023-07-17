@@ -5,7 +5,7 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 //비동기 서버통신으로 데이터를 전달 받아서 내부적으로 액션타입을 자동생성해서 액션 객체 생성까지 완료
-const fetchYoutube = createAsyncThunk('youtube/requestYoutube', async () => {
+export const fetchYoutube = createAsyncThunk('youtube/requestYoutube', async () => {
 	const key = 'AIzaSyDOsDRuQ_v0ISUQEy6mZdnCfcf3VKIG5uE';
 	const list = 'PLGrvPC1Wr19hEuOc58RgKY1uPw_0eoIbE';
 	const num = 10;
@@ -17,7 +17,7 @@ const fetchYoutube = createAsyncThunk('youtube/requestYoutube', async () => {
 
 const youtubeSlice = createSlice({
 	name: 'youtube',
-	initalState: {
+	initialState: {
 		data: [],
 		isLoading: false,
 	},

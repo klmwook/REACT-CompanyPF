@@ -23,6 +23,14 @@ import { fetchYoutube } from './redux/youtubeSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+/* 
+	redux-toolkit의 작업흐름
+	1. redux 폴더 안쪽에 작업하려는 data의 slice 파일 생성 (data fetching후 액션객체 생성 함수, 액션 객체 받아서 전역 데이터 수정 함수)
+	2. index.js에서 slice 값으로 연동된 데이터 store에 저장하고 App에 전달
+	3. app.js에서 slice파일로부터 action 객체 생성 함수를 import 후 호출하여 action 만들고 dispatch로 전달
+	4. 원하는 컴포넌트에서 useSelector로 데이터 가져오기
+*/
+
 function App() {
 	const menu = useRef(null);
 	const dispatch = useDispatch();

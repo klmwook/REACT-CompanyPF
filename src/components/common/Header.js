@@ -4,9 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //Link - 기본 링크 기능
 //NavLink - 기본 링크 기능 + 활성화 기능
 import { Link, NavLink } from 'react-router-dom';
-import { useRef, memo } from 'react';
+import { memo } from 'react';
+import { toggle } from '../../redux/menuSlice';
+import { useDispatch } from 'react-redux';
 
-function Header({ type, menu }) {
+function Header({ type }) {
+	const dispatch = useDispatch();
 	const active = 'on';
 
 	return (
@@ -53,8 +56,7 @@ function Header({ type, menu }) {
 				<FontAwesomeIcon
 					icon={faBars}
 					onClick={() => {
-						console.log(menu);
-						menu.current.toggle();
+						dispatch(toggle());
 					}}
 				/>
 			</header>

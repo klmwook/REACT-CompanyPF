@@ -1,31 +1,35 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+/*
+--Redux-toolkit으로 client State 전역 관리하는 작업 순서--
+	{open : false} false면 메뉴 제거 / true면 메뉴 오픈
+	menuSlice.js를 만들어서 위의 정보값을 초기 전역 state로 등록
+	reducer에는 해당 전역 state 값을 변경해주는 함수를 등록
+	해당 함수를 원하는 컴포넌트에서 자유롭게 호출해서 전역 state 변경 하도록 
+*/
+import { close } from '../../redux/meneSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink } from 'react-router-dom';
 
-const Menu = forwardRef((props, ref) => {
+function Menu() {
+	const dispatch = useDispatch();
 	const active = { color: 'aqua' };
-	const [Open, setOpen] = useState(false);
-
-	useImperativeHandle(ref, () => {
-		return { toggle: () => setOpen(!Open) };
-	});
-
-	//이 부분은 계속 가지고 있기 때문에 굳이 remove 함수로 변경 하지 않아도 된다
-	useEffect(() => {
-		window.addEventListener('resize', () => {
-			if (window.innerWidth >= 1200) setOpen(false);
-		});
-	}, []);
+	const menu = useSelector((store) => store.menu.open);
 
 	return (
 		<AnimatePresence>
-			{Open && (
-				<motion.nav id='mobilePanel' initial={{ opacity: 0, x: -200 }} animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }} exit={{ opacity: 0, x: -200, transition: { duration: 0.5 } }}>
-					<h1 onClick={() => setOpen(false)}>
+			{menu && (
+				<motion.nav
+					id='mobilePanel'
+					initial={{ opacity: 0, x: -200 }}
+					animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }}
+					exit={{ opacity: 0, x: -200, transition: { duration: 0.5 } }}
+					onClick={() => dispatch(close())}
+				>
+					<h1>
 						<Link to='/'>LOGO</Link>
 					</h1>
 
-					<ul id='gnbMo' onClick={() => setOpen(false)}>
+					<ul id='gnbMo'>
 						<li>
 							<NavLink to='/department' activeStyle={active}>
 								Department
@@ -61,6 +65,6 @@ const Menu = forwardRef((props, ref) => {
 			)}
 		</AnimatePresence>
 	);
-});
+}
 
 export default Menu;

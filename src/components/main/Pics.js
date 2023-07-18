@@ -1,11 +1,13 @@
+import { useSelector } from 'react-redux';
+
 function Pics({ Scrolled, Pos }) {
+	useSelector((store) => console.log(store.flickr.data));
+
 	// Pics 컴포넌트가 활성화 되는 순간부터 scrolled 값을 pics의 제목 스타일과 연동
 	//on이 찍혔을 때가 활성화가 되는 순간
 	const currentPos = Scrolled - Pos;
 	const base = window.innerHeight / 2;
 	const modified = currentPos + base;
-
-	console.log(`Pos : ${Pos}`);
 
 	return (
 		<section id='pics' className='myScroll'>

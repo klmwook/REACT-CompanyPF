@@ -21,6 +21,7 @@ import { useRef } from 'react';
 
 import { fetchYoutube } from './redux/youtubeSlice';
 import { fetchDepartment } from './redux/departmentSlice';
+import { fetchFlickr } from './redux/flickrSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -39,6 +40,7 @@ function App() {
 	useEffect(() => {
 		dispatch(fetchYoutube());
 		dispatch(fetchDepartment());
+		dispatch(fetchFlickr({ type: 'user', user: '198489363@N07' }));
 	}, [dispatch]);
 
 	return (

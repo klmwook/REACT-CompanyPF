@@ -10,7 +10,11 @@ function Community() {
 
 	const getLocalData = () => {
 		const data = localStorage.getItem('post');
-		return JSON.parse(data);
+		if (data == null) {
+			return [];
+		} else {
+			return JSON.parse(data);
+		}
 	};
 
 	const input = useRef(null);

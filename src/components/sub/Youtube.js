@@ -11,7 +11,7 @@ function Youtube() {
 
 	return (
 		<>
-			<Layout name={'Youtube'}>
+			<Layout name={'Youtube'} bg={'Youtube.jpg'}>
 				{Vids.map((Vid, idx) => {
 					return (
 						<article key={idx}>

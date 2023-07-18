@@ -5,7 +5,7 @@ function Department() {
 	const Members = useSelector((store) => store.department.data);
 
 	return (
-		<Layout name={'Department'} txt={'hello-World'}>
+		<Layout name={'Department'} txt={'hello-World'} bg={'Department.jpg'}>
 			{Members.map((member, idx) => {
 				return (
 					<article key={idx}>

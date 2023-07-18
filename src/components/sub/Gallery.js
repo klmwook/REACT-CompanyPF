@@ -94,7 +94,7 @@ function Gallery() {
 
 	return (
 		<>
-			<Layout name={'Gallery'}>
+			<Layout name={'Gallery'} bg={'Gallery.jpg'}>
 				<div className='btnSet' ref={btnSet}>
 					<button onClick={showInterest}>Interest Gallery</button>
 

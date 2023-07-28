@@ -1,14 +1,14 @@
 import { Route, Switch } from 'react-router-dom';
 
-//Common
+//common
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
 import Menu from './components/common/Menu';
 
-//Main
+//main
 import Main from './components/main/Main';
 
-//Sub
+//sub
 import Community from './components/sub/Community';
 import Contact from './components/sub/Contact';
 import Department from './components/sub/Department';
@@ -17,22 +17,21 @@ import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
-import { fetchYoutube } from './redux/youtubeSlice';
+
 import { fetchDepartment } from './redux/departmentSlice';
 import { fetchFlickr } from './redux/flickrSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
 	const queryClient = new QueryClient();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchYoutube());
 		dispatch(fetchDepartment());
-		dispatch(fetchFlickr({ type: 'user', user: '198489363@N07' }));
+		dispatch(fetchFlickr({ type: 'user', user: '164021883@N04' }));
 	}, [dispatch]);
 
 	return (
@@ -41,7 +40,6 @@ function App() {
 				<Route exact path='/' render={() => <Main />} />
 				<Route path='/' render={() => <Header type={'sub'} />} />
 			</Switch>
-
 			<Route path='/department' component={Department} />
 			<Route path='/community' component={Community} />
 			<Route path='/gallery' component={Gallery} />

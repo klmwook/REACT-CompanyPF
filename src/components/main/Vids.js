@@ -1,5 +1,4 @@
 import { memo, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper';
 import 'swiper/css';
@@ -7,6 +6,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { useYoutubeQuery } from '../../hooks/useYoutubeQuery';
 
 function BtnRolling() {
 	const btnStart = useRef(null);
@@ -38,8 +38,7 @@ function BtnRolling() {
 }
 
 function Vids() {
-	const Vids = useSelector((store) => store.youtube.data);
-	console.log(Vids);
+	const { data: Vids, isSuccess } = useYoutubeQuery();
 
 	return (
 		<section id='vids' className='myScroll'>
@@ -60,21 +59,22 @@ function Vids() {
 				}}
 			>
 				<BtnRolling />
-				{Vids.map((vid, idx) => {
-					if (idx >= 5) return null;
+				{isSuccess &&
+					Vids.map((vid, idx) => {
+						if (idx >= 5) return null;
 
-					return (
-						<SwiperSlide key={idx}>
-							<div className='inner'>
-								<div className='pic'>
-									<img src={vid.snippet.thumbnails.standard.url} alt={vid.snippet.title} />
+						return (
+							<SwiperSlide key={idx}>
+								<div className='inner'>
+									<div className='pic'>
+										<img src={vid.snippet.thumbnails.standard.url} alt={vid.snippet.title} />
+									</div>
+									<h2>{vid.snippet.title.length >= 30 ? vid.snippet.title.substr(0, 30) + '...' : vid.snippet.title}</h2>
+									<p>{vid.snippet.description.length >= 100 ? vid.snippet.description.substr(0, 100) + '...' : vid.snippet.description}</p>
 								</div>
-								<h2>{vid.snippet.title.length >= 30 ? vid.snippet.title.substr(0, 30) + '...' : vid.snippet.title}</h2>
-								<p>{vid.snippet.description.length >= 100 ? vid.snippet.description.substr(0, 100) + '...' : vid.snippet.description}</p>
-							</div>
-						</SwiperSlide>
-					);
-				})}
+							</SwiperSlide>
+						);
+					})}
 			</Swiper>
 		</section>
 	);

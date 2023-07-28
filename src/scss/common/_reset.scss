@@ -5,26 +5,25 @@
 }
 body {
 	background: #efefef;
+	width: 100%;
+	overflow-x: hidden;
 }
 ul,
 ol,
 li {
 	list-style: none;
 }
-
 a {
 	text-decoration: none;
 }
-
 fieldset {
 	border: none;
 }
-
 table {
 	border-collapse: collapse;
 }
 .h {
 	position: absolute;
-	top: -99999px;
+	top: -999999px;
 	opacity: 0;
 }

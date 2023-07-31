@@ -1,12 +1,15 @@
 import Layout from '../common/Layout';
 import Masonry from 'react-masonry-component';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../common/Modal';
-import { fetchFlickr } from '../../redux/flickrSlice';
+import { useFlickrQuery } from '../../hooks/useFlickrQuery';
 
 function Gallery() {
-	const dispatch = useDispatch();
+	/*
+		hooks은 다른 hook이나 일반 함수 안쪽에서 호출 불가 : useEffect 안쪽이나 이벤트 핸들러 안쪽에서 호출 불가 , 컴포넌트 안졲에서만 호출
+	*/
+	const [Opt, setOpt] = useState({ type: 'user', user: '198489363@N07' });
+	const { data: Items, isSuccess } = useFlickrQuery(Opt);
 	const openModal = useRef(null);
 	const isUser = useRef(true);
 	const searchInput = useRef(null);
@@ -16,7 +19,6 @@ function Gallery() {
 	const [Loader, setLoader] = useState(true);
 	const [Index, setIndex] = useState(0);
 	const counter = useRef(0);
-	const Items = useSelector((store) => store.flickr.data);
 	const firstLoaded = useRef(true);
 
 	const resetGallery = (e) => {
@@ -37,7 +39,7 @@ function Gallery() {
 		resetGallery(e);
 
 		//새로운 데이터로 갤러리 생성 함수 호출
-		dispatch(fetchFlickr({ type: 'interest' }));
+		setOpt({ type: 'interest' });
 		isUser.current = false;
 	};
 
@@ -50,7 +52,7 @@ function Gallery() {
 		resetGallery(e);
 
 		//새로운 데이터로 갤러리 생성 함수 호출
-		dispatch(fetchFlickr({ type: 'user', user: '198489363@N07' }));
+		setOpt({ type: 'user', user: '198489363@N07' });
 		isUser.current = false;
 	};
 
@@ -60,19 +62,18 @@ function Gallery() {
 		if (!enableEvent.current) return;
 
 		resetGallery(e);
-		dispatch(fetchFlickr({ type: 'search', tags: tag }));
+		setOpt({ type: 'search', tags: tag });
 		searchInput.current.value = '';
 	};
 
 	useEffect(() => {
-		console.log(Items);
 		counter.current = 0;
-		if (Items.length === 0 && !firstLoaded.current) {
+		if (isSuccess && Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
 			frame.current.classList.add('on');
 			const btnMine = btnSet.current.children;
 			btnMine[1].classList.add('on');
-			dispatch(fetchFlickr({ type: 'user', user: '198489363@N07' }));
+			setOpt({ type: 'user', user: '198489363@N07' });
 			enableEvent.current = true;
 			return alert('이미지 결과값이 없습니다.');
 		}
@@ -90,7 +91,7 @@ function Gallery() {
 				}
 			};
 		});
-	}, [Items, dispatch]);
+	}, [Items]);
 
 	return (
 		<>
@@ -110,50 +111,49 @@ function Gallery() {
 
 				<div className='frame' ref={frame}>
 					<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
-						{Items.map((item, idx) => {
-							return (
-								<article key={idx}>
-									<div className='inner'>
-										<div
-											className='pic'
-											onClick={() => {
-												openModal.current.Open();
-												setIndex(idx);
-											}}
-										>
-											<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt={item.title} />
-										</div>
-										<h2>{item.title}</h2>
-										<div className='profile'>
-											<img
-												src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
-												alt={item.owner}
-												onError={(e) => e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif')}
-											/>
-											<span
-												onClick={(e) => {
-													if (isUser.current) return;
-													isUser.current = true;
-													setLoader(true);
-													frame.current.classList.remove('on');
-													dispatch(fetchFlickr({ type: 'user', user: e.target.innerText }));
+						{isSuccess &&
+							Items.map((item, idx) => {
+								return (
+									<article key={idx}>
+										<div className='inner'>
+											<div
+												className='pic'
+												onClick={() => {
+													openModal.current.Open();
+													setIndex(idx);
 												}}
 											>
-												{item.owner}
-											</span>
+												<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt={item.title} />
+											</div>
+											<h2>{item.title}</h2>
+											<div className='profile'>
+												<img
+													src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
+													alt={item.owner}
+													onError={(e) => e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif')}
+												/>
+												<span
+													onClick={(e) => {
+														if (isUser.current) return;
+														isUser.current = true;
+														setLoader(true);
+														frame.current.classList.remove('on');
+														setOpt({ type: 'user', user: e.target.innerText });
+													}}
+												>
+													{item.owner}
+												</span>
+											</div>
 										</div>
-									</div>
-								</article>
-							);
-						})}
+									</article>
+								);
+							})}
 					</Masonry>
 				</div>
 				{Loader && <img className='loader' src={`${process.env.PUBLIC_URL}/img/loading.gif`} alt='loader' />}
 			</Layout>
 
-			<Modal ref={openModal}>
-				<img src={`https://live.staticflickr.com/${Items[Index]?.server}/${Items[Index]?.id}_${Items[Index]?.secret}_b.jpg`} alt={Items[Index]?.title} />
-			</Modal>
+			<Modal ref={openModal}>{isSuccess && <img src={`https://live.staticflickr.com/${Items[Index]?.server}/${Items[Index]?.id}_${Items[Index]?.secret}_b.jpg`} alt={Items[Index]?.title} />}</Modal>
 		</>
 	);
 }

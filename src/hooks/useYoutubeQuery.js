@@ -15,7 +15,7 @@ export const useYoutubeQuery = () => {
 	return useQuery(['youtubeData'], fecthYoutube, {
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
-		cacheTime: 1000 * 5,
-		staleTime: 1000 * 5,
+		cacheTime: 1000 * 20,
+		staleTime: 1000 * 20,
 	});
 };

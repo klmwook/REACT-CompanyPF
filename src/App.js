@@ -19,7 +19,6 @@ import Youtube from './components/sub/Youtube';
 import './scss/style.scss';
 
 import { fetchDepartment } from './redux/departmentSlice';
-import { fetchFlickr } from './redux/flickrSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -31,7 +30,7 @@ function App() {
 
 	useEffect(() => {
 		dispatch(fetchDepartment());
-		dispatch(fetchFlickr({ type: 'user', user: '164021883@N04' }));
+		//dispatch(fetchFlickr({ type: 'user', user: '164021883@N04' }));
 	}, [dispatch]);
 
 	return (

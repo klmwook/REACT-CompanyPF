@@ -7,7 +7,7 @@ const fetchDepartment = async () => {
 };
 
 export const useDepartmentQuery = () => {
-	useQuery(['departmentData'], fetchDepartment, {
+	return useQuery(['departmentData'], fetchDepartment, {
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		cacheTime: 1000 * 60 * 60 * 24,

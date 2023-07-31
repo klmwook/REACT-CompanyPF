@@ -1,15 +1,12 @@
 //font awesome을 사용하기 위한 import
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//Link - 기본 링크 기능
-//NavLink - 기본 링크 기능 + 활성화 기능
 import { Link, NavLink } from 'react-router-dom';
 import { memo } from 'react';
-import { toggle } from '../../redux/menuSlice';
-import { useDispatch } from 'react-redux';
+import { useGlobalData } from '../../hooks/usdGlobalContext';
 
 function Header({ type }) {
-	const dispatch = useDispatch();
+	const { MenuOpen, setMenuOpen } = useGlobalData();
 	const active = 'on';
 
 	return (
@@ -53,12 +50,7 @@ function Header({ type }) {
 					</li>
 				</ul>
 
-				<FontAwesomeIcon
-					icon={faBars}
-					onClick={() => {
-						dispatch(toggle());
-					}}
-				/>
+				<FontAwesomeIcon icon={faBars} onClick={() => setMenuOpen(!MenuOpen)} />
 			</header>
 		</>
 	);

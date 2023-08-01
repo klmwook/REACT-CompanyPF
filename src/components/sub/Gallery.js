@@ -80,6 +80,8 @@ function Gallery() {
 		firstLoaded.current = false;
 		const imgs = frame.current.querySelectorAll('img');
 
+		if (!imgs) return;
+
 		imgs.forEach((img) => {
 			img.onload = () => {
 				++counter.current;

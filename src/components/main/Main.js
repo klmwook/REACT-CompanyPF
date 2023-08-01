@@ -18,6 +18,7 @@ import Btns from './Btns';
 function Main() {
 	const [Scrolled, setScrolled] = useState(0);
 	const [Pos, setPos] = useState([]);
+	console.log(Pos);
 
 	return (
 		<main>

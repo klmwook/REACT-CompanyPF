@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Layout from '../common/Layout';
 import { useHistory } from 'react-router-dom';
+import { useDebounce } from '../../hooks/useDebounce';
 
 function Member() {
 	const selectEl = useRef(null);
@@ -13,16 +14,12 @@ function Member() {
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
 
+	const DebouncedVal = useDebounce(Val);
+
 	const handleChange = (e) => {
 		//현재 입력하고 있는 input요소의 name,value값을 비구조화할당으로 뽑아서 출력
 		const { name, value } = e.target;
 		//기존 초기 Val State값을 deep copy해서 현재 입력하고 있는 항목의 name값과 value값으로 기존 State를 덮어쓰기 해서 변경 (불변성 유지)
-		setVal({ ...Val, [name]: value });
-	};
-
-	const handleRadio = (e) => {
-		const { name, value } = e.target;
-
 		setVal({ ...Val, [name]: value });
 	};
 
@@ -38,17 +35,18 @@ function Member() {
 		setVal({ ...Val, [name]: checkArr });
 	};
 
-	const handleSelect = (e) => {
-		const { name, value } = e.target;
-		setVal({ ...Val, [name]: value });
-	};
+	const showErr = useCallback(() => {
+		console.log('showErr');
+		setSubmit(false);
+		setErr(check(DebouncedVal));
+	}, [DebouncedVal]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log('현재 스테이트값', Val);
+		//console.log('현재 스테이트값', Val);
 		//check가 반환하는 인증 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지
 		//그렇지 않으면 인증 성공
-		console.log(check(Val));
+		//console.log(check(Val));
 		setErr(check(Val));
 		setSubmit(true);
 	};
@@ -86,28 +84,18 @@ function Member() {
 		return errs;
 	};
 
-	const resetForm = useCallback(() => {
-		const select = selectEl.current.options[0];
-		const checks = checkGroup.current.querySelectorAll('input');
-		const radios = radioGroup.current.querySelectorAll('input');
-		select.selected = true;
-		checks.forEach((el) => (el.checked = false));
-		radios.forEach((el) => (el.checked = false));
-		setVal(initVal.current);
-	}, []);
-
 	useEffect(() => {
 		const len = Object.keys(Err).length;
 		if (len === 0 && Submit) {
 			alert('모든 인증을 통과했습니다.');
-			//history.push('/');
-			resetForm();
+			history.push('/');
+			//resetForm();
 		}
-	}, [Err, Submit, resetForm]);
+	}, [Err, Submit]);
 
 	useEffect(() => {
-		console.log(Val);
-	}, [Val]);
+		showErr();
+	}, [DebouncedVal, showErr]);
 
 	return (
 		<Layout name={'Member'} bg={'Members.jpg'}>
@@ -172,10 +160,10 @@ function Member() {
 								<th>GENDER</th>
 								<td ref={radioGroup}>
 									<label htmlFor='male'>Male</label>
-									<input type='radio' name='gender' value='male' id='mail' onChange={handleRadio} />
+									<input type='radio' name='gender' value='male' id='mail' onChange={handleChange} />
 
 									<label htmlFor='female'>FeMale</label>
-									<input type='radio' name='gender' value='female' id='female' onChange={handleRadio} />
+									<input type='radio' name='gender' value='female' id='female' onChange={handleChange} />
 									<br />
 									{Err.gender && <p>{Err.gender}</p>}
 								</td>
@@ -204,7 +192,7 @@ function Member() {
 									<label htmlFor='edu'>EDUCATION</label>
 								</th>
 								<td>
-									<select name='edu' id='edu' onChange={handleSelect} ref={selectEl}>
+									<select name='edu' id='edu' onChange={handleChange} ref={selectEl}>
 										<option value=''>최종학력을 선택하세요</option>
 										<option value='elementary-school'>초등학교 졸업</option>
 										<option value='middle-school'>중학교 졸업</option>

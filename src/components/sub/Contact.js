@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import Layout from '../common/Layout';
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import emailjs from '@emailjs/browser';
+import { useThrottle } from '../../hooks/useThrottle';
 
 function Contact() {
+	const container = useRef(null);
+	const form = useRef(null);
+	const inputName = useRef(null);
+	const inputEmail = useRef(null);
+	const inputMsg = useRef(null);
 	const [Traffic, setTraffic] = useState(false);
 	const [Location, setLocation] = useState(null);
 	const [Index, setIndex] = useState(0);
-	const container = useRef(null); //지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조 객체 생성
-	const { kakao } = window; //일반 HTML 버전과는 달리 윈도우 객체에서 직접 Kakao 상위 객체값을 뽑아옴
+	const [Success, setSuccess] = useState(false);
 
-	const infos = useRef([
+	const { kakao } = window;
+	const info = useRef([
 		{
 			title: '삼성역 코엑스',
 			latlng: new kakao.maps.LatLng(37.51100661425726, 127.06162026853143),
@@ -33,60 +39,21 @@ function Contact() {
 		},
 	]);
 
-	//아래 5개 변수값들은 useEffect구문에서 인스턴스 생성할때만 필요한 정보값에 불과하므로 미리 읽히도록 useEffect바깥에 배치
-
+	//marker의 정보값을 useMemo로 메모이제이션 해야 되는 이유
+	//해당 정보값이 바뀌지않는 static한 값이 아니고 State에 의해서 계속 변경되는 값이기 때문에
+	//내부에 index State값이 바뀔때마 임시로 메모이제이션을 풀기 위해서 useMemo에 Index State를 의존성 배열에 등록해야 되기 때문
 	const marker = useMemo(() => {
 		return new kakao.maps.Marker({
-			position: infos.current[Index].latlng,
-			image: new kakao.maps.MarkerImage(infos.current[Index].imgSrc, infos.current[Index].imgSize, infos.current[Index].imgPos),
+			position: info.current[Index].latlng,
+			image: new kakao.maps.MarkerImage(info.current[Index].imgSrc, info.current[Index].imgSize, info.current[Index].imgPos),
 		});
 	}, [Index, kakao]);
 
-	//카카오 맵 연결 해보기~
-	//인스턴스 호출 구문은 Component Mount 이후에 호출
-	useEffect(() => {
-		container.current.innerHTML = '';
-		const mapInstance = new kakao.maps.Map(container.current, {
-			center: infos.current[Index].latlng, // 지도의 중심좌표
-			level: 3, // 지도의 확대 레벨
-		});
-		marker.setMap(mapInstance);
-
-		//지도영역에 휠 기능 비활성화
-		mapInstance.setZoomable(false);
-		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
-		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
-		//지역변수인 mapInstance값을 다른함수에도 활용해야 되므로 Location state에 해당 인스턴스 값 저장
-		setLocation(mapInstance);
-
-		const setCenter = () => {
-			//setCenter가 호출 시 내부적으로 Index state값에 의존하고 있기 때문에
-			//useEffect 안쪽에서 setCenter 함수를 정의하고 호출
-			mapInstance.setCenter(infos.current[Index].latlng);
-		};
-
-		window.addEventListener('resize', setCenter);
-
-		return () => window.removeEventListener('resize', setCenter);
-	}, [Index, kakao, marker]);
-
-	useEffect(() => {
-		//Location State에 담겨있는 맵 인스턴스로부터 traffic 레이어 호출 구문 처리 (Traffic state가 변경 될 때 마다)
-		//첫 렌더링 사이클에서는 Location 값이 null이므로 Option Chaining을 활용해서 해당 값이 담기는 두번째 랜더링 사이클로부터 동작하도록 처리
-		Traffic ? Location?.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC) : Location?.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
-	}, [Traffic, Location, kakao]);
-
-	//이메일 전송 부분
-	const [Success, setSuccess] = useState(false);
-	const inputName = useRef();
-	const inputEmail = useRef();
-	const inputMsg = useRef();
-	const form = useRef();
-
+	//폼메일 전송 함수
 	const sendEmail = (e) => {
 		e.preventDefault();
 
-		emailjs.sendForm('service_xvbck36', 'template_5lrdzsn', form.current, 'DuVGSRIP4uXIG234N').then(
+		emailjs.sendForm('service_4wnjvjd', 'template_651z7ig', form.current, '23g8RepczesqKPoIX').then(
 			(result) => {
 				console.log(result.text);
 				setSuccess(true);
@@ -101,15 +68,47 @@ function Contact() {
 		);
 	};
 
+	const setCenter = useCallback(() => {
+		console.log('setCenter');
+		Location?.setCenter(info.current[Index].latlng);
+	}, [Index, Location]);
+
+	//커스텀훅은 다른 hook안쪽에서 호출이 불가능하므로
+	//useThrottle을 활용해야 되는 함수가 useEffect안쪽에 있다면
+	//밖으로 꺼내서 useThrottle적용한다음 또다른 useEffect안쪽에서 이벤트 연결
+	const setCenter2 = useThrottle(setCenter);
+
+	useEffect(() => {
+		container.current.innerHTML = '';
+		const mapInstance = new kakao.maps.Map(container.current, { center: info.current[Index].latlng, level: 3 });
+		marker.setMap(mapInstance);
+		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
+		setLocation(mapInstance);
+
+		//지도영역에 휠 기능 비활성화
+		mapInstance.setZoomable(false);
+	}, [kakao, Index, marker]);
+
+	useEffect(() => {
+		window.addEventListener('resize', setCenter2);
+		return () => window.removeEventListener('resize', setCenter2);
+	}, [setCenter2]);
+
+	useEffect(() => {
+		Traffic ? Location?.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC) : Location?.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+	}, [Traffic, Location, kakao]);
+
 	return (
 		<Layout name={'Contact'} bg={'Location.jpg'}>
 			<div id='map' ref={container}></div>
-			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? '교통정보 off' : '교통정보 on'}</button>
+			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? 'Traffic ON' : 'Traffic OFF'}</button>
+
 			<ul className='branch'>
-				{infos.current.map((info, idx) => {
+				{info.current.map((el, idx) => {
 					return (
-						<li key={idx} onClick={() => setIndex(idx)} className={Index === idx ? 'on' : ''}>
-							{info.title}
+						<li key={idx} onClick={() => setIndex(idx)} className={idx === Index ? 'on' : ''}>
+							{el.title}
 						</li>
 					);
 				})}
@@ -117,17 +116,16 @@ function Contact() {
 
 			<div id='formBox'>
 				<form ref={form} onSubmit={sendEmail}>
-					<input type='hidden' name='to_name' value='taewook' />
 					<label>Name</label>
-					<input type='text' name='from_name' ref={inputName} />
+					<input type='text' name='name' ref={inputName} />
 					<label>Email</label>
-					<input type='email' name='reply_to' ref={inputEmail} />
+					<input type='email' name='email' ref={inputEmail} />
 					<label>Message</label>
 					<textarea name='message' ref={inputMsg} />
 					<input type='submit' value='Send' />
 				</form>
+				{Success && <p>메일이 성공적으로 발송되었습니다.</p>}
 			</div>
-			{Success && '메일이 성공적으로 발송되었습니다.'}
 		</Layout>
 	);
 }

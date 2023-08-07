@@ -44,3 +44,9 @@ function App() {
 }
 
 export default App;
+
+/*
+	Automatic Batching 
+	:여려개의 state값이 하나의 핸들러 함수 안쪽에서 동시에 변경이 될때 그룹으로 묶어서 한번만 렌더링 처리
+	:17에도 동작되는 기능이긴 하나 promise를 반환하는 함수 안쪽에 여러개의 state값이 변경될 경우에는 동작안됨
+*/

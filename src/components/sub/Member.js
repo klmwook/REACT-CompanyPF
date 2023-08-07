@@ -5,21 +5,29 @@ import { useDebounce } from '../../hooks/useDebounce';
 
 function Member() {
 	const selectEl = useRef(null);
-	//initVal 값을 굳이 useMemo Memoization 하지 않더라도 useRef로 담아놓으면 해당 값은 컴포넌트가 Rerandering 되더라도 값을 기억
-	const initVal = useRef({ userid: '', pwd1: '', pwd2: '', email: '', gender: '', interests: [], edu: '', comments: '' });
+	const initVal = useRef({
+		userid: '',
+		pwd1: '',
+		pwd2: '',
+		email: '',
+		gender: '',
+		interests: [],
+		edu: '',
+		comments: '',
+	});
 	const radioGroup = useRef(null);
 	const checkGroup = useRef(null);
 	const history = useHistory();
+
 	const [Val, setVal] = useState(initVal.current);
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
+	const [Mounted, setMounted] = useState(true);
 
 	const DebouncedVal = useDebounce(Val);
 
 	const handleChange = (e) => {
-		//현재 입력하고 있는 input요소의 name,value값을 비구조화할당으로 뽑아서 출력
 		const { name, value } = e.target;
-		//기존 초기 Val State값을 deep copy해서 현재 입력하고 있는 항목의 name값과 value값으로 기존 State를 덮어쓰기 해서 변경 (불변성 유지)
 		setVal({ ...Val, [name]: value });
 	};
 
@@ -27,7 +35,6 @@ function Member() {
 		const { name } = e.target;
 		const inputs = e.target.parentElement.querySelectorAll('input');
 
-		//모든 체크박스를 반복돌면서 하나라도 체크되어 있는게 있으면 true값 반환
 		let checkArr = [];
 		inputs.forEach((el) => {
 			if (el.checked) checkArr.push(el.value);
@@ -43,10 +50,6 @@ function Member() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		//console.log('현재 스테이트값', Val);
-		//check가 반환하는 인증 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지
-		//그렇지 않으면 인증 성공
-		//console.log(check(Val));
 		setErr(check(Val));
 		setSubmit(true);
 	};
@@ -89,9 +92,9 @@ function Member() {
 		if (len === 0 && Submit) {
 			alert('모든 인증을 통과했습니다.');
 			history.push('/');
-			//resetForm();
 		}
-	}, [Err, Submit]);
+		return () => setMounted(false);
+	}, [Err, Submit, history]);
 
 	useEffect(() => {
 		showErr();
@@ -218,7 +221,7 @@ function Member() {
 							{/* btn set */}
 							<tr>
 								<th colSpan='2'>
-									<input type='reset' value='CANCEL' onClick={() => setVal(initVal.current)} />
+									<input type='reset' value='CANCEL' onClick={() => setVal(initVal)} />
 									<input type='submit' value='SEND' />
 								</th>
 							</tr>
